@@ -33,11 +33,9 @@ Les éléments dont l'onduleur ne fournit pas la mesure sont simplement masqués
 2. Ajoutez `https://github.com/Marlboro62/onduleur-ups-card` avec le type **Tableau de bord** (Dashboard).
 3. Cherchez **Carte Onduleur UPS**, installez-la, puis rechargez la page (Ctrl+F5).
 
-> Tant qu'il n'existe qu'une version bêta, activez **Afficher les versions bêta** dans la fenêtre de téléchargement de HACS.
-
 ### Manuellement
 
-1. Téléchargez `onduleur-ups-card.js` depuis les [releases](https://github.com/Marlboro62/onduleur-ups-card/releases) et copiez-le dans `/config/www/`.
+1. Téléchargez `onduleur-ups-card.js` depuis la [dernière release](https://github.com/Marlboro62/onduleur-ups-card/releases/latest) et copiez-le dans `/config/www/`.
 2. **Paramètres → Tableaux de bord → ⋮ → Ressources → Ajouter une ressource** :
    - URL : `/local/onduleur-ups-card.js`
    - Type : **Module JavaScript**
