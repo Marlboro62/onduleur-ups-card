@@ -1,0 +1,19 @@
+# Carte Onduleur UPS : exemple de configuration.
+# Avec l'intégration Network UPS Tools, « type » suffit : les capteurs sont trouvés seuls.
+type: custom:onduleur-ups-card
+# device: 0123456789abcdef   # à choisir dans l'éditeur visuel s'il y a plusieurs onduleurs
+title: Onduleur
+show_details: true
+theme: v2                    # v2, auto ou ha
+
+# Facultatif : forcer un capteur (autre intégration, entité renommée…)
+# entities:
+#   battery_charge: sensor.onduleur_charge_de_la_batterie
+#   runtime: sensor.onduleur_autonomie_de_la_batterie
+#   load: sensor.onduleur_charge
+#   status_raw: sensor.onduleur_code_d_etat
+#   realpower: sensor.onduleur_puissance_reelle
+#   power_nominal: sensor.onduleur_puissance_nominale
+#   output_voltage: sensor.onduleur_tension_de_sortie
+#   transfer_low: sensor.onduleur_transfert_de_tension_basse
+#   transfer_high: sensor.onduleur_transfert_de_tension_haute
