@@ -6,6 +6,8 @@ Elle est conçue pour l'intégration **[Network UPS Tools (NUT)](https://www.hom
 
 Elle a le même style que la [Carte Enedis Linky New](https://github.com/Marlboro62/content-card-linky-new), mais elle est **indépendante** : type `custom:onduleur-ups-card`, ressource à part.
 
+🎮 **[Essayer la démo en ligne](https://marlboro62.github.io/onduleur-ups-card/docs/demo.html)** : la vraie carte avec des données simulées, sans installer Home Assistant.
+
 | Secteur (sombre) | Clair | Coupure, batterie faible |
 | --- | --- | --- |
 | ![Secteur](images/eaton-sombre.png) | ![Clair](images/eaton-clair.png) | ![Sur batterie](images/sur-batterie.png) |

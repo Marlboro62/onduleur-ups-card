@@ -1,0 +1,317 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Carte Onduleur UPS · démo</title>
+<meta name="description" content="Démonstration de la carte Lovelace Carte Onduleur UPS (Network UPS Tools : Eaton, APC…), avec des données simulées.">
+<style>
+  :root {
+    --bg: #0f1724; --panel: #172133; --line: #2a3850; --text: #e7edf5; --muted: #8fa0b8;
+    --accent: #96d21f; --accent2: #1d93e3; --btn: #1e2a3f; --btn-on: #2b3d5c;
+    /* Variables lues par la carte en mode « Thème Home Assistant » */
+    --card-background-color: #1c1c1c; --primary-text-color: #e1e1e1;
+    --secondary-text-color: #9b9b9b; --divider-color: rgba(225, 225, 225, .12);
+    --ha-card-border-radius: 12px;
+    color-scheme: dark;
+  }
+  :root[data-theme="light"] {
+    --bg: #eef2f7; --panel: #ffffff; --line: #d6dde8; --text: #1b2433; --muted: #5b6b82;
+    --accent: #4c8a0b; --accent2: #1673b8; --btn: #f2f5f9; --btn-on: #dde7f5;
+    --card-background-color: #ffffff; --primary-text-color: #212121;
+    --secondary-text-color: #727272; --divider-color: rgba(0, 0, 0, .12);
+    color-scheme: light;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--text);
+    font: 15px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  a { color: var(--accent2); }
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 28px 16px 48px; }
+  .top { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; margin-bottom: 22px; }
+  .top svg { width: 44px; height: 44px; fill: none; flex: none; }
+  .top .house { stroke: var(--accent); stroke-width: 2.4; stroke-linejoin: round; stroke-linecap: round; }
+  .top .bolt { fill: var(--accent2); }
+  h1 { font-size: 1.5rem; margin: 0; line-height: 1.2; }
+  .lead { margin: 2px 0 0; color: var(--muted); }
+  .badge { display: inline-block; margin-left: 6px; padding: 1px 8px; border-radius: 999px; font-size: .75rem;
+    font-weight: 600; background: var(--btn-on); color: var(--text); vertical-align: middle; }
+  .links { margin-left: auto; display: flex; gap: 14px; font-size: .9rem; }
+
+  .grid { display: grid; grid-template-columns: 340px 1fr; gap: 20px; align-items: start; }
+  @media (max-width: 900px) { .grid { grid-template-columns: 1fr; } .links { margin-left: 0; } .stage { order: -1; } }
+
+  .panel { background: var(--panel); border: 1px solid var(--line); border-radius: 16px; padding: 16px; }
+  .panel h2 { font-size: .8rem; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); margin: 0 0 10px; }
+  .ctl { margin-bottom: 14px; }
+  .ctl:last-child { margin-bottom: 0; }
+  .ctl-l { font-size: .85rem; margin-bottom: 6px; }
+  .seg { display: flex; flex-wrap: wrap; gap: 6px; }
+  .seg button { font: inherit; font-size: .82rem; padding: 5px 11px; border-radius: 999px; cursor: pointer;
+    border: 1px solid var(--line); background: var(--btn); color: var(--text); }
+  .seg button[aria-pressed="true"] { background: var(--btn-on); border-color: var(--accent2); font-weight: 600; }
+  .seg button:focus-visible { outline: 2px solid var(--accent2); outline-offset: 2px; }
+  .seg .sw { display: inline-block; width: 9px; height: 9px; border-radius: 50%; margin-right: 6px; vertical-align: 0; }
+  .sw.blue { background: #3f7ff0; } .sw.white { background: #e9eef4; box-shadow: inset 0 0 0 1px #9aa6b6; }
+  .sw.red { background: #ee4a4a; } .sw.none { background: transparent; box-shadow: inset 0 0 0 1px var(--muted); }
+  .sw.green { background: #5fcf8a; } .sw.orange { background: #f0a33a; }
+
+  .stage { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+  .frame { margin: 0 auto; width: 100%; transition: max-width .25s ease; }
+  .frame[data-width="mobile"] { max-width: 420px; }
+  .frame[data-width="large"] { max-width: 760px; }
+  .hint { font-size: .82rem; color: var(--muted); text-align: center; margin: 0; }
+
+  pre { margin: 0; padding: 12px; border-radius: 10px; background: var(--bg); border: 1px solid var(--line);
+    font: 13px/1.5 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; overflow-x: auto; white-space: pre; }
+  .yaml-h { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+  .yaml-h h2 { margin: 0; }
+  .copy { font: inherit; font-size: .8rem; padding: 4px 10px; border-radius: 8px; cursor: pointer;
+    border: 1px solid var(--line); background: var(--btn); color: var(--text); }
+  [hidden] { display: none !important; }
+  .note { font-size: .82rem; color: var(--muted); margin: 18px 0 0; }
+  @media (prefers-reduced-motion: reduce) { .frame { transition: none; } }
+</style>
+<style>
+  .top .sun { fill: #f5b82e; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <svg viewBox="0 0 32 32" aria-hidden="true"><path class="house" d="M4 14.5 16 4l12 10.5V27a1.5 1.5 0 0 1-1.5 1.5h-5M10.5 28.5h-5A1.5 1.5 0 0 1 4 27V14.5"/><path class="bolt" d="M17.5 9 11 18h4.5l-1.5 8 7-10h-4.6z"/></svg>
+    <div>
+      <h1>Carte Onduleur UPS <span class="badge">démo</span></h1>
+      <p class="lead">Batterie, autonomie, charge et état de l'onduleur · données simulées, sans Home Assistant</p>
+    </div>
+    <nav class="links">
+      <a href="https://github.com/Marlboro62/onduleur-ups-card">Dépôt GitHub</a>
+      <a href="https://github.com/Marlboro62/onduleur-ups-card#installation">Installation</a>
+    </nav>
+  </header>
+
+  <div class="grid">
+    <aside class="panel" aria-label="Réglages de la démo">
+      <h2>Affichage</h2>
+      <div class="ctl"><div class="ctl-l">Thème de la page</div><div class="seg" data-key="page">
+        <button data-v="dark">Sombre</button><button data-v="light">Clair</button></div></div>
+      <div class="ctl"><div class="ctl-l">Couleurs de la carte (<code>theme</code>)</div><div class="seg" data-key="theme">
+        <button data-v="v2">MyElectricalData</button><button data-v="auto">MyElectricalData auto</button><button data-v="ha">Thème Home Assistant</button></div></div>
+      <div class="ctl"><div class="ctl-l">Largeur</div><div class="seg" data-key="width">
+        <button data-v="mobile">Téléphone</button><button data-v="large">Tablette / PC</button></div></div>
+      <h2 style="margin-top:20px">Carte</h2>
+      <div class="ctl"><div class="ctl-l">Onduleur</div><div class="seg" data-key="model">
+        <button data-v="eaton">Eaton 3S 850 (noms en français)</button><button data-v="apc">APC Back-UPS (noms en anglais)</button></div></div>
+      <div class="ctl"><div class="ctl-l">Détails (<code>show_details</code>)</div><div class="seg" data-key="details">
+        <button data-v="on">Affichés</button><button data-v="off">Masqués</button></div></div>
+      <h2 style="margin-top:20px">Situation simulée</h2>
+      <div class="ctl"><div class="ctl-l">État de l'onduleur</div><div class="seg" data-key="scene">
+        <button data-v="OL"><i class="sw green"></i>Secteur</button><button data-v="OL CHRG"><i class="sw green"></i>En charge</button><button data-v="OB DISCHRG"><i class="sw red"></i>Coupure, sur batterie</button><button data-v="OB LB"><i class="sw red"></i>Batterie faible</button><button data-v="OL OVER"><i class="sw red"></i>Surcharge</button><button data-v="OL RB"><i class="sw orange"></i>Batterie à remplacer</button></div></div>
+      <div class="ctl"><div class="ctl-l">Charge branchée</div><div class="seg" data-key="charge">
+        <button data-v="low">Box et NAS</button><button data-v="mid">PC et écran</button><button data-v="high">Serveurs</button></div></div>
+    </aside>
+
+    <main class="stage">
+      <div class="frame" id="frame"></div>
+      <p class="hint" id="hint">Choisissez un état à gauche pour voir comment la carte réagit à une coupure de courant.</p>
+      <section class="panel">
+        <div class="yaml-h"><h2>Configuration de la carte</h2><button class="copy" id="copy">Copier</button></div>
+        <pre id="yaml"></pre>
+      </section>
+    </main>
+  </div>
+
+  <p class="note">Les valeurs sont simulées. Dans Home Assistant, la carte retrouve seule les capteurs de l'intégration Network UPS Tools (NUT), que leurs noms soient en français ou en anglais.</p>
+</div>
+
+<!-- La carte, telle qu'elle est publiée dans le dépôt -->
+<script src="../onduleur-ups-card.js"></script>
+<script>
+(() => {
+  "use strict";
+
+  let seed = (Date.now() / 86400000) | 0;
+  const rnd = () => { seed = (seed + 0x6d2b79f5) | 0; let t = Math.imul(seed ^ (seed >>> 15), 1 | seed);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; };
+  const round = (n, d = 2) => Math.round(n * 10 ** d) / 10 ** d;
+  const stamp = () => new Date().toISOString() + Math.random();
+  const S = (entity_id, st, attributes = {}) => ({ entity_id, state: String(st), attributes, last_updated: stamp() });
+
+  const state = { page: "dark", theme: "v2", width: "mobile", model: "eaton", details: "on", scene: "OL", charge: "low" };
+  const outlet = { on: true };
+  const LOAD = { low: 14, mid: 38, high: 72 };
+
+  /* Valeurs selon l'état choisi */
+  function values() {
+    const sc = state.scene;
+    let load = LOAD[state.charge];
+    if (sc.includes("OVER")) load = 104;
+    const ob = sc.startsWith("OB");
+    const batt = sc.includes("LB") ? 11 : ob ? 64 : sc.includes("CHRG") ? 78 : 99;
+    const full = { eaton: 2900, apc: 2400 }[state.model] * (14 / Math.max(load, 5)) ** 0.9;
+    const runtime = Math.round(full * (batt / 100));
+    return { load, batt, runtime, ob, display: { OL: "Online", "OL CHRG": "Online Battery Charging", "OB DISCHRG": "On Battery Battery Discharging", "OB LB": "On Battery Low Battery", "OL OVER": "Online Overload", "OL RB": "Online Replace Battery" }[sc] };
+  }
+
+  function buildHass() {
+    const v = values();
+    const states = {};
+    const entities = {};
+    const dev = state.model === "eaton"
+      ? { id: "dev_eaton", name: "Onduleur", model: "Eaton 3S 850", manufacturer: "EATON", sw_version: "02.08.0010" }
+      : { id: "dev_apc", name: "Back-UPS", model: "Back-UPS RS 900G", manufacturer: "American Power Conversion", sw_version: "879.L4 .I" };
+    const add = (obj, st, attrs = {}, tk) => {
+      const id = obj.includes(".") ? obj : `sensor.${obj}`;
+      states[id] = S(id, st, attrs);
+      entities[id] = { entity_id: id, device_id: dev.id, platform: "nut", translation_key: tk };
+    };
+    const p = state.model === "eaton" ? "onduleur_" : "back_ups_";
+    if (state.model === "eaton") {
+      add(p + "code_d_etat", state.scene, {}, "ups_status");
+      add(p + "etat", v.display, {}, "ups_status_display");
+      add(p + "charge_de_la_batterie", v.batt, { unit_of_measurement: "%" }, "battery_charge");
+      add(p + "consigne_de_batterie_faible", 20, { unit_of_measurement: "%" }, "battery_charge_low");
+      add(p + "autonomie_de_la_batterie", v.runtime, { unit_of_measurement: "s" }, "battery_runtime");
+      add(p + "charge", v.load, { unit_of_measurement: "%" }, "ups_load");
+      add(p + "puissance_reelle", Math.round(850 * 0.6 * v.load / 100), { unit_of_measurement: "W" }, "ups_realpower");
+      add(p + "puissance_nominale", 850, { unit_of_measurement: "VA" }, "ups_power_nominal");
+      add(p + "tension_de_sortie", v.ob ? 228 : 230, { unit_of_measurement: "V" }, "output_voltage");
+      add(p + "tension_de_sortie_nominale", 230, { unit_of_measurement: "V" }, "output_voltage_nominal");
+      add(p + "frequence_de_sortie_nominale", 50, { unit_of_measurement: "Hz" }, "output_frequency_nominal");
+      add(p + "transfert_de_tension_basse", 184, { unit_of_measurement: "V" }, "input_transfer_low");
+      add(p + "transfert_de_tension_haute", 264, { unit_of_measurement: "V" }, "input_transfer_high");
+      add(p + "chimie_de_la_batterie", "PbAc", {}, "battery_chemistry");
+      add(p + "type_d_onduleur", "offline / line interactive", {}, "ups_type");
+      add(p + "etat_du_signal_sonore", "disabled", {}, "ups_beeper_status");
+      add(p + "delai_d_arret_de_l_onduleur", 20, { unit_of_measurement: "s" }, "ups_delay_shutdown");
+      add(p + "delai_de_redemarrage_de_la_charge", 30, { unit_of_measurement: "s" }, "ups_delay_start");
+      add(p + "powershare_outlet_1", "PowerShare Outlet 1", {});
+    } else {
+      add(p + "status_data", state.scene);
+      add(p + "status", v.display);
+      add(p + "battery_charge", v.batt, { unit_of_measurement: "%" });
+      add(p + "low_battery_setpoint", 10, { unit_of_measurement: "%" });
+      add(p + "battery_runtime", v.runtime, { unit_of_measurement: "s" });
+      add(p + "load", v.load, { unit_of_measurement: "%" });
+      add(p + "nominal_real_power", 540, { unit_of_measurement: "W" });
+      add(p + "input_voltage", v.ob ? 0 : 233, { unit_of_measurement: "V" });
+      add(p + "output_voltage", v.ob ? 230 : 233, { unit_of_measurement: "V" });
+      add(p + "battery_voltage", v.ob ? 25.6 : 27.2, { unit_of_measurement: "V" });
+      add(p + "low_voltage_transfer", 176, { unit_of_measurement: "V" });
+      add(p + "high_voltage_transfer", 282, { unit_of_measurement: "V" });
+      add(p + "battery_chemistry", "PbAc");
+      add(p + "beeper_status", "enabled");
+      add("switch.back_ups_outlet_1", outlet.on ? "on" : "off", { friendly_name: "Back-UPS Prise 1" });
+    }
+    return {
+      states, entities, devices: { [dev.id]: dev },
+      themes: { darkMode: state.page === "dark" }, language: "fr",
+      callService: async (domain, service, data) => {
+        if (domain === "switch" && service === "toggle" && data?.entity_id === "switch.back_ups_outlet_1") { outlet.on = !outlet.on; render(); }
+      },
+    };
+  }
+
+  function config() {
+    const c = { type: "custom:onduleur-ups-card" };
+    if (state.details === "off") c.show_details = false;
+    c.theme = state.theme;
+    return c;
+  }
+
+
+  /* Home Assistant fournit <ha-card> et <ha-icon> ; ici, des équivalents simples. */
+  if (!customElements.get("ha-card")) {
+    customElements.define("ha-card", class extends HTMLElement {
+      constructor() { super(); this.attachShadow({ mode: "open" }).innerHTML = "<style>:host{display:block}</style><slot></slot>"; }
+    });
+  }
+  if (!customElements.get("ha-icon")) {
+    const MDI = "https://cdn.jsdelivr.net/npm/@mdi/font@7.4.47/css/materialdesignicons.min.css";
+    const font = document.createElement("link"); font.rel = "stylesheet"; font.href = MDI; document.head.appendChild(font);
+    customElements.define("ha-icon", class extends HTMLElement {
+      static get observedAttributes() { return ["icon"]; }
+      connectedCallback() { this._draw(); }
+      attributeChangedCallback() { this._draw(); }
+      _draw() {
+        if (!this.shadowRoot) this.attachShadow({ mode: "open" });
+        const name = String(this.getAttribute("icon") || "mdi:flash").replace(/^mdi:/, "");
+        this.shadowRoot.innerHTML = `<link rel="stylesheet" href="${MDI}"><style>:host{display:inline-flex;align-items:center;justify-content:center;width:var(--mdc-icon-size,24px);height:var(--mdc-icon-size,24px)}i{font-size:var(--mdc-icon-size,24px);line-height:1}</style><i class="mdi mdi-${name}"></i>`;
+      }
+    });
+  }
+
+  const STORE = "onduleur-ups-demo";
+  try {
+    const saved = JSON.parse(localStorage.getItem(STORE) || "{}");
+    for (const k of Object.keys(state)) if (typeof saved[k] === "string") state[k] = saved[k];
+  } catch (e) { /* stockage indisponible : réglages par défaut */ }
+
+
+  const frame = document.getElementById("frame");
+  let card = null;
+
+  function yaml(c, indent = "") {
+    const out = [];
+    for (const [k, v] of Object.entries(c)) {
+      if (v === undefined) continue;
+      if (Array.isArray(v)) {
+        out.push(`${indent}${k}:`);
+        for (const item of v) {
+          const lines = yaml(item, indent + "    ").split("\n");
+          out.push(`${indent}  - ${lines[0].trim()}`, ...lines.slice(1));
+        }
+      } else if (v && typeof v === "object") {
+        out.push(`${indent}${k}:`, yaml(v, indent + "  "));
+      } else {
+        const txt = typeof v === "string" && /: |\s#|^[&*!|>'"%@`{\[]/.test(v) ? `"${v}"` : v;
+        out.push(`${indent}${k}: ${txt}`);
+      }
+    }
+    return out.join("\n");
+  }
+
+  function render() {
+    document.documentElement.dataset.theme = state.page;
+    frame.dataset.width = state.width;
+    document.querySelectorAll(".seg").forEach((seg) => {
+      seg.querySelectorAll("button").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.v === state[seg.dataset.key])));
+    });
+    const c = config();
+    document.getElementById("yaml").textContent = yaml(c);
+    const tag = c.type.replace("custom:", "");
+    if (!customElements.get(tag)) return;
+    if (!card) { card = document.createElement(tag); frame.appendChild(card); }
+    const hass = buildHass();
+    card.setConfig(c);
+    card.hass = hass;
+  }
+
+  document.querySelectorAll(".seg").forEach((seg) => {
+    seg.addEventListener("click", (ev) => {
+      const b = ev.target.closest("button");
+      if (!b) return;
+      state[seg.dataset.key] = b.dataset.v;
+      try { localStorage.setItem(STORE, JSON.stringify(state)); } catch (e) { /* ignoré */ }
+      render();
+    });
+  });
+
+  /* Dans la démo, un clic sur un capteur n'ouvre pas de fenêtre : on l'indique. */
+  frame.addEventListener("hass-more-info", (ev) => {
+    const h = document.getElementById("hint");
+    h.textContent = `Dans Home Assistant, ce clic ouvrirait le capteur ${ev.detail?.entityId || ""}.`;
+  });
+
+  document.getElementById("copy").addEventListener("click", async (ev) => {
+    const txt = document.getElementById("yaml").textContent;
+    try { await navigator.clipboard.writeText(txt); ev.target.textContent = "Copié ✓"; }
+    catch (e) { ev.target.textContent = "Sélectionnez le texte"; }
+    setTimeout(() => { ev.target.textContent = "Copier"; }, 1600);
+  });
+
+  render();
+  customElements.whenDefined("onduleur-ups-card").then(render);
+})();
+</script>
+</body>
+</html>
