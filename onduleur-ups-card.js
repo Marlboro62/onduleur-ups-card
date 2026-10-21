@@ -10,7 +10,7 @@
  */
 
 (() => {
-const CARD_VERSION = "0.1.0-beta";
+const CARD_VERSION = "0.1.1-beta";
 
 /* ------------------------------------------------------------- affichage */
 
@@ -291,7 +291,7 @@ class OnduleurUpsCard extends HTMLElement {
           <div class="g-l">Batterie${st.codes.includes("CHRG") ? " · en charge" : ""}</div>
           <div class="g-v">${charge !== null ? `${fmt(charge, 0)}<span>%</span>` : "—"}</div>
           <div class="g-bar ${battCls}"><i style="width:${Math.max(0, Math.min(100, charge ?? 0))}%"></i>${low !== null ? `<b class="mark" style="left:${low}%" title="Seuil batterie faible : ${fmt(low, 0)} %"></b>` : ""}</div>
-          <div class="g-n">${runtime !== null ? `Autonomie <b>${duration(runtime)}</b>` : ""}${low !== null ? `<span>seuil ${fmt(low, 0)} %</span>` : ""}</div>
+          <div class="g-n">${runtime !== null ? `<span class="g-k">Autonomie <b>${duration(runtime)}</b></span>` : ""}${low !== null ? `<span>seuil ${fmt(low, 0)} %</span>` : ""}</div>
         </div>`
       : "";
 
@@ -307,7 +307,7 @@ class OnduleurUpsCard extends HTMLElement {
           <div class="g-l">Charge</div>
           <div class="g-v">${load !== null ? `${fmt(load, 0)}<span>%</span>` : "—"}</div>
           <div class="g-bar ${loadCls}"><i style="width:${Math.max(0, Math.min(100, load ?? 0))}%"></i></div>
-          <div class="g-n">${watts !== null ? `<b>${realW === null ? "≈ " : ""}${fmt(watts, 0)} W</b>` : ""}${nomVA !== null || nomW !== null ? `<span>sur ${[nomVA !== null ? `${fmt(nomVA, 0)} VA` : null, nomW !== null ? `${fmt(nomW, 0)} W` : null].filter(Boolean).join(" / ")}</span>` : ""}</div>
+          <div class="g-n">${watts !== null ? `<span class="g-k"><b>${realW === null ? "≈ " : ""}${fmt(watts, 0)} W</b></span>` : ""}${nomVA !== null || nomW !== null ? `<span>sur ${[nomVA !== null ? `${fmt(nomVA, 0)} VA` : null, nomW !== null ? `${fmt(nomW, 0)} W` : null].filter(Boolean).join(" / ")}</span>` : ""}</div>
         </div>`
       : "";
 
@@ -427,6 +427,7 @@ ha-card.on-batt { border-color: var(--t-red); }
 .g-bar .mark { position: absolute; top: -3px; bottom: -3px; width: 2px; margin-left: -1px; background: var(--med-text); opacity: .55; border-radius: 1px; }
 .g-n { display: flex; justify-content: space-between; gap: 8px; flex-wrap: wrap; font-size: .78rem; color: var(--med-muted); }
 .g-n b { color: var(--med-text); font-weight: 600; }
+.g-n .g-k { color: var(--med-muted); }
 .ups-tiles { grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)) !important; }
 .ups-tiles .tile { cursor: pointer; }
 .ups-tiles .tile-v { font-size: 1.2rem; }
