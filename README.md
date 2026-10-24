@@ -37,7 +37,7 @@ Les éléments dont l'onduleur ne fournit pas la mesure sont simplement masqués
 
 ### Manuellement
 
-1. Téléchargez `onduleur-ups-card.js` depuis la [dernière release](https://github.com/Marlboro62/onduleur-ups-card/releases/latest) et copiez-le dans `/config/www/`.
+1. Téléchargez [`onduleur-ups-card.js`](https://raw.githubusercontent.com/Marlboro62/onduleur-ups-card/main/onduleur-ups-card.js) (clic droit → Enregistrer sous) et copiez-le dans `/config/www/`.
 2. **Paramètres → Tableaux de bord → ⋮ → Ressources → Ajouter une ressource** :
    - URL : `/local/onduleur-ups-card.js`
    - Type : **Module JavaScript**
