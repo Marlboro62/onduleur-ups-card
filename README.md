@@ -38,7 +38,7 @@ Elle a le même style que la [Carte Enedis Linky New](https://github.com/Marlbor
 
 | Secteur (sombre) | Clair | Coupure, batterie faible |
 | --- | --- | --- |
-| ![Secteur](images/eaton-sombre.png) | ![Clair](images/eaton-clair.png) | ![Sur batterie](images/sur-batterie.png) |
+| ![Secteur](https://raw.githubusercontent.com/Marlboro62/onduleur-ups-card/main/images/eaton-sombre.png) | ![Clair](https://raw.githubusercontent.com/Marlboro62/onduleur-ups-card/main/images/eaton-clair.png) | ![Sur batterie](https://raw.githubusercontent.com/Marlboro62/onduleur-ups-card/main/images/sur-batterie.png) |
 
 *Aperçus avec les valeurs d'un Eaton 3S 850 reproduites.*
 
@@ -125,7 +125,7 @@ entities:
 | `chemistry`, `type`, `beeper` | Chimie, type d'onduleur, état du bip |
 | `delay_shutdown`, `delay_start` | Délais d'arrêt et de redémarrage |
 
-Un exemple complet est dans [`exemples/carte-onduleur.yaml`](exemples/carte-onduleur.yaml).
+Un exemple complet est dans [`exemples/carte-onduleur.yaml`](https://github.com/Marlboro62/onduleur-ups-card/blob/main/exemples/carte-onduleur.yaml).
 
 > Beaucoup de capteurs NUT (autonomie, seuils, délais…) sont des capteurs de **diagnostic**, parfois **désactivés par défaut**. Pour qu'ils apparaissent sur la carte, activez-les dans **Paramètres → Appareils → votre onduleur**.
 
