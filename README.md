@@ -38,7 +38,7 @@ Elle a le même style que la [Carte Enedis Linky New](https://github.com/Marlbor
 
 | Secteur (sombre) | Clair | Coupure, batterie faible |
 | --- | --- | --- |
-| ![Secteur](https://raw.githubusercontent.com/Marlboro62/onduleur-ups-card/main/images/eaton-sombre.png) | ![Clair](https://raw.githubusercontent.com/Marlboro62/onduleur-ups-card/main/images/eaton-clair.png) | ![Sur batterie](https://raw.githubusercontent.com/Marlboro62/onduleur-ups-card/main/images/sur-batterie.png) |
+| <img src="https://raw.githubusercontent.com/Marlboro62/onduleur-ups-card/main/images/eaton-sombre.png" alt="Secteur" width="300"> | <img src="https://raw.githubusercontent.com/Marlboro62/onduleur-ups-card/main/images/eaton-clair.png" alt="Clair" width="300"> | <img src="https://raw.githubusercontent.com/Marlboro62/onduleur-ups-card/main/images/sur-batterie.png" alt="Sur batterie" width="300"> |
 
 *Aperçus avec les valeurs d'un Eaton 3S 850 reproduites.*
 
