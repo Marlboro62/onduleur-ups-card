@@ -10,7 +10,7 @@
  */
 
 (() => {
-const CARD_VERSION = "0.1.3";
+const CARD_VERSION = "0.2.0-beta.1";
 
 /* ------------------------------------------------------------- affichage */
 
@@ -406,7 +406,7 @@ ha-card.on-batt { border-color: var(--t-red); }
 .brand .box { fill: none; stroke: var(--med-green); stroke-width: 2.4; }
 .sub { max-width: 260px; }
 .pill.ups-ok .dot { background: var(--med-down); }
-.pill.ups-info .dot { background: var(--med-blue); }
+.pill.ups-info .dot { background: var(--med-accent, var(--med-blue)); }
 .pill.ups-warn { border-color: #f0a33a; } .pill.ups-warn .dot { background: #f0a33a; }
 .pill.ups-alert { border-color: var(--t-red); } .pill.ups-alert .dot { background: var(--t-red); animation: blink 1.2s infinite; }
 @keyframes blink { 50% { opacity: .25; } }
@@ -421,7 +421,7 @@ ha-card.on-batt { border-color: var(--t-red); }
 .g-v span { font-size: .95rem; font-weight: 500; color: var(--med-muted); margin-left: 3px; }
 .g-bar { position: relative; height: 8px; border-radius: 6px; background: var(--med-line); margin: 8px 0 6px; }
 .g-bar i { display: block; height: 100%; border-radius: 6px; background: var(--med-muted); }
-.g-bar.b-ok i { background: linear-gradient(90deg, var(--med-blue), var(--med-green)); }
+.g-bar.b-ok i { background: linear-gradient(90deg, var(--med-accent, var(--med-blue)), var(--med-green)); }
 .g-bar.b-warn i { background: #f0a33a; }
 .g-bar.b-alert i { background: var(--t-red); }
 .g-bar .mark { position: absolute; top: -3px; bottom: -3px; width: 2px; margin-left: -1px; background: var(--med-text); opacity: .55; border-radius: 1px; }
@@ -447,7 +447,7 @@ ha-card.on-batt { border-color: var(--t-red); }
 .sw { all: unset; cursor: pointer; width: 38px; height: 22px; border-radius: 11px; background: var(--med-line); position: relative; flex: none; }
 .sw i { position: absolute; top: 3px; left: 3px; width: 16px; height: 16px; border-radius: 50%; background: var(--med-muted); transition: left .15s; }
 .sw.on { background: color-mix(in srgb, var(--med-green) 45%, transparent); } .sw.on i { left: 19px; background: var(--med-green); }
-.sw:focus-visible { outline: 2px solid var(--med-blue); }
+.sw:focus-visible { outline: 2px solid var(--med-accent, var(--med-blue)); }
 .chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 12px 12px 0; }
 .chip { padding: 4px 10px; border-radius: 999px; border: 1px solid var(--med-line); font-size: .74rem; cursor: pointer; }
 .chip span { color: var(--med-muted); }
@@ -470,7 +470,7 @@ header { display: flex; align-items: center; justify-content: space-between; gap
 .brand { display: flex; align-items: center; gap: 10px; }
 .brand svg { width: 34px; height: 34px; fill: none; }
 .brand .house { stroke: var(--med-green); stroke-width: 2.4; stroke-linejoin: round; stroke-linecap: round; }
-.brand .bolt { fill: var(--med-blue); }
+.brand .bolt { fill: var(--med-accent, var(--med-blue)); }
 .title { font-size: 1.15rem; font-weight: 700; letter-spacing: .2px; }
 .sub { font-size: .78rem; color: var(--med-muted); }
 .tempo { display: flex; gap: 8px; }
@@ -531,7 +531,7 @@ header { display: flex; align-items: center; justify-content: space-between; gap
 .day b { color: var(--med-text); font-size: .78rem; }
 .day .dot { width: 6px; height: 6px; margin-top: 2px; }
 .day.on { background: var(--med-surface); }
-.day:focus-visible { outline: 2px solid var(--med-blue); }
+.day:focus-visible { outline: 2px solid var(--med-accent, var(--med-blue)); }
 
 .detail { margin: 8px 12px 0; padding: 10px 12px; border-radius: 12px; background: var(--med-surface); border: 1px solid var(--med-line); }
 .detail-h { display: flex; align-items: center; gap: 8px; font-size: .8rem; color: var(--med-muted); }
@@ -546,7 +546,7 @@ header { display: flex; align-items: center; justify-content: space-between; gap
 .power.is-over { border-color: var(--t-red); }
 .power-t { display: flex; justify-content: space-between; font-size: .85rem; }
 .gauge { height: 6px; border-radius: 6px; background: var(--med-line); margin: 8px 0 6px; overflow: hidden; }
-.gauge i { display: block; height: 100%; background: linear-gradient(90deg, var(--med-green), var(--med-blue)); }
+.gauge i { display: block; height: 100%; background: linear-gradient(90deg, var(--med-green), var(--med-accent, var(--med-blue))); }
 .is-over .gauge i { background: var(--t-red); }
 .power-n { font-size: .75rem; color: var(--med-muted); }
 
@@ -560,6 +560,9 @@ footer { padding: 10px 18px 14px; font-size: .7rem; color: var(--med-muted); }
 .empty span { color: var(--med-muted); }
 /* Thème Home Assistant : fond, textes et bordures suivent le thème clair ou sombre */
 ha-card.th-ha {
+  /* accent (icônes, onglets, sélections, contours) : couleur principale du thème ; les bleus porteurs de sens restent bleus */
+  --med-accent: var(--primary-color, #1d93e3);
+  --med-on-accent: var(--text-primary-color, #fff);
   --med-bg: var(--ha-card-background, var(--card-background-color, #fff));
   --med-surface: color-mix(in srgb, var(--primary-text-color, #000) 5%, transparent);
   --med-line: var(--divider-color, rgba(127, 127, 127, .25));
