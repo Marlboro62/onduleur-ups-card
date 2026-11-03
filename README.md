@@ -59,9 +59,10 @@ Les éléments dont l'onduleur ne fournit pas la mesure sont simplement masqués
 
 ### Avec HACS (recommandé)
 
-1. Dans HACS, menu **⋮** → **Dépôts personnalisés**.
-2. Ajoutez `https://github.com/Marlboro62/onduleur-ups-card` avec le type **Tableau de bord** (Dashboard).
-3. Cherchez **Carte Onduleur UPS**, installez-la, puis rechargez la page (Ctrl+F5).
+1. Dans HACS, cherchez **Carte Onduleur UPS** et installez-la.
+2. Rechargez la page (Ctrl+F5).
+
+Si la carte n'apparaît pas encore dans la recherche de HACS, ajoutez le dépôt à la main : menu **⋮** → **Dépôts personnalisés**, adresse `https://github.com/Marlboro62/onduleur-ups-card`, type **Tableau de bord** (Dashboard), puis cherchez **Carte Onduleur UPS**.
 
 ### Manuellement
 
