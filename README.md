@@ -28,6 +28,9 @@
 
 # Carte Onduleur UPS
 
+[![HACS Default](https://img.shields.io/badge/HACS-Default-41BDF5.svg)](https://hacs.xyz/)
+[![Release](https://img.shields.io/github/v/release/Marlboro62/onduleur-ups-card)](https://github.com/Marlboro62/onduleur-ups-card/releases)
+
 Carte Lovelace pour Home Assistant qui affiche l'état d'un **onduleur (UPS)** : batterie et autonomie, charge et puissance, tensions, plage secteur acceptée, prises pilotables et alerte en cas de coupure.
 
 Elle est conçue pour l'intégration **[Network UPS Tools (NUT)](https://www.home-assistant.io/integrations/nut/)** et fonctionne donc avec toutes les marques que NUT prend en charge : **Eaton, APC, CyberPower, Riello, Legrand, Salicru, Infosec**, etc. Pour une autre intégration, chaque capteur peut être choisi à la main.
