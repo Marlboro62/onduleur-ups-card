@@ -10,7 +10,7 @@
  */
 
 (() => {
-const CARD_VERSION = "0.2.1";
+const CARD_VERSION = "0.2.2";
 
 /* ------------------------------------------------------------- affichage */
 
@@ -339,7 +339,9 @@ class OnduleurUpsCard extends HTMLElement {
       const lo = tl - (th - tl) * 0.25;
       const hi = th + (th - tl) * 0.25;
       const pos = (x) => Math.max(0, Math.min(100, ((x - lo) / (hi - lo)) * 100));
-      range = `<div class="range" data-entity="${esc(m.transfer_low)}">
+      // le clic ouvre la tension affichée par le curseur (entrée, sinon sortie), le seuil bas en dernier recours
+      const vId = this._num(m.input_voltage) !== null ? m.input_voltage : v !== null ? m.output_voltage : m.transfer_low;
+      range = `<div class="range" data-entity="${esc(vId)}">
           <div class="chart-h"><span>Plage secteur acceptée</span><span>${v !== null ? `${this._num(m.input_voltage) !== null ? "entrée" : "sortie"} ${fmt(v, 0)} V` : ""}</span></div>
           <div class="r-bar"><i style="left:${pos(tl)}%;right:${100 - pos(th)}%"></i>${v !== null ? `<b style="left:${pos(v)}%"></b>` : ""}</div>
           <div class="r-l"><span style="left:${pos(tl)}%">${fmt(tl, 0)} V</span><span style="left:${pos(th)}%">${fmt(th, 0)} V</span></div>
